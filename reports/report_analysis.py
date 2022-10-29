@@ -1,6 +1,7 @@
 import os
 import sys
 import getopt
+import re
 from math import ceil
 
 import numpy as np
@@ -49,18 +50,38 @@ def remove_unused_axes(col_names, axes):
     for ax in axes.flat[-remainder:]:
         ax.remove()
 
+
+def skip_rows(df):
+    df.columns = df.iloc[8]
+    df = df.iloc[9:].reset_index(drop=True)
+    return df
+
+
+def get_date(df):
+    date = df.iloc[6, 3]
+    pattern = re.compile("Data: (.*)$")
+    date = pattern.search(date).group(1)
+    return date
+
+
+def get_opponent(df):
+    opponent = df.iloc[2, 3]
+    pattern = re.compile("VS (.*)$")
+    opponent = pattern.search(opponent).group(1)
+    return opponent
+
+
 if __name__ == "__main__":
     filename = parse_parameters(sys.argv)
 
-    df = pd.read_excel(filename, skiprows=3, usecols=range(2,16))
+    df = pd.read_excel(filename, usecols=range(2,14))
+    date, opponent = get_date(df), get_opponent(df)
+    df = skip_rows(df)
     df = df.replace("-", np.nan)
     df = df.loc[:find_first_nan_row(df)-1]
-    # Uncomment if "Remate Efeatuado" and "Remate Enquadrado" are not cumulative!
-    # df["Remate Enquadrado"] = (df["Remate Enquadrado"].fillna(0) + df["Golos"]).replace(0, np.nan)
-    # df["Remate Efetuado"] = (df["Remate Efetuado"].fillna(0) + df["Remate Enquadrado"]).replace(0, np.nan)
+    col_names = ["Perda de Bola", "Passe Errado", "Desarme", "Interceção de Passe", "Interceção de Remate", "Remate", "Remate à Baliza", "Assistência", "Golos", "Defesas", "Linha de Passe"]
+    gr_names = ["Vasco S.", "Pedro R.", "Óscar S."]
 
-    col_names = ["Perda de Bola", "Passe Errado", "Desarme", "Interceção de Passe", "Interceção de Remate", "Remate Efetuado", "Remate Enquadrado", "Assistência", "Golos", "Defesas", "Posse bola"]
-    gr_names = ["Vasco S.", "Pedro R.", "Oscar S."]
     # Remove col_name if the corresponding column is empty
     for name in col_names:
         if df[name].isna().all():
@@ -78,7 +99,7 @@ if __name__ == "__main__":
         ax.tick_params(axis="x", rotation=45)
 
     remove_unused_axes(col_names, axes)
-    plt.suptitle(f"Jogo {df['Data'].iloc[0]} - Atlético vs {df['Adversário'].iloc[0]}")
+    plt.suptitle(f"Jogo {date} - Atlético vs {opponent}")
     plt.tight_layout()
 
     filename_no_extension, _ = os.path.splitext(filename)
