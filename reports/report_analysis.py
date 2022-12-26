@@ -80,7 +80,7 @@ if __name__ == "__main__":
     df = df.replace("-", np.nan)
     df = df.loc[:find_first_nan_row(df)-1]
     col_names = ["Perda de Bola", "Passe Errado", "Desarme", "Interceção de Passe", "Interceção de Remate", "Remate", "Remate à Baliza", "Assistência", "Golos", "Defesas", "Linha de Passe"]
-    gr_names = ["Vasco S.", "Pedro R.", "Óscar S."]
+    gr_names = ["Vasco S.", "Mário B.", "Óscar S."]
 
     # Remove col_name if the corresponding column is empty
     for name in col_names:
