@@ -52,7 +52,7 @@ if __name__ == "__main__":
         ax.tick_params(axis="x", rotation=90)
 
     remove_unused_axes(COL_NAMES, axes)
-    plt.suptitle(f"Estatísticas agregadas {len(dfs)} jornadas")
+    plt.suptitle(f"Estatísticas agregadas {len(dfs)} jornadas campeonato")
     plt.tight_layout()
 
-    plt.savefig("Estatísticas agregadas.png")
+    plt.savefig("Estatísticas agregadas campeonato.png")
