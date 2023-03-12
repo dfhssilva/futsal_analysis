@@ -2,11 +2,12 @@ import os
 import sys
 import getopt
 import re
-from math import ceil
 
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+from utils import *
+
 
 def parse_parameters(argv):
     arg_file = ""
@@ -26,35 +27,6 @@ def parse_parameters(argv):
             arg_file = arg
 
     return arg_file
-
-def find_first_nan_row(df):
-    nan_ix = df.index[df.isna().all(axis=1)][0]
-    return nan_ix
-
-
-def define_axes_grid(col_names):
-    num_rows = 1
-    while True:
-        num_cols = ceil(len(col_names)/num_rows)
-        if num_cols > 4:
-            num_rows += 1
-        else:
-            break
-
-    return num_rows, num_cols
-
-
-def remove_unused_axes(col_names, axes):
-    grid_size = define_axes_grid(col_names)
-    remainder = grid_size[0] * grid_size[1] - len(col_names)
-    for ax in axes.flat[-remainder:]:
-        ax.remove()
-
-
-def skip_rows(df):
-    df.columns = df.iloc[8]
-    df = df.iloc[9:].reset_index(drop=True)
-    return df
 
 
 def get_date(df):
@@ -76,29 +48,25 @@ if __name__ == "__main__":
 
     df = pd.read_excel(filename, usecols=range(2,14))
     date, opponent = get_date(df), get_opponent(df)
-    df = skip_rows(df)
-    df = df.replace("-", np.nan)
-    df = df.loc[:find_first_nan_row(df)-1]
-    col_names = ["Perda de Bola", "Passe Errado", "Desarme", "Interceção de Passe", "Interceção de Remate", "Remate", "Remate à Baliza", "Assistência", "Golos", "Defesas", "Linha de Passe"]
-    gr_names = ["Vasco S.", "Mário B.", "Óscar S."]
+    df = extract_analysis_table(df)
 
     # Remove col_name if the corresponding column is empty
-    for name in col_names:
+    for name in COL_NAMES:
         if df[name].isna().all():
-            col_names.remove(name)
-    fig, axes = plt.subplots(*define_axes_grid(col_names), figsize=(21, 9))
+            COL_NAMES.remove(name)
+    fig, axes = plt.subplots(*define_axes_grid(COL_NAMES), figsize=(21, 9))
 
-    for ax, name in zip(axes.flat, col_names):
+    for ax, name in zip(axes.flat, COL_NAMES):
         data = df.sort_values(name, ascending=False).reset_index()
         bar_plot = ax.bar(data["Nome completo"], data[name])
         # Set GR bars with a different color
-        gr_indices = data.index[data["Nome completo"].isin(gr_names)].tolist()
+        gr_indices = data.index[data["Nome completo"].isin(GR_NAMES)].tolist()
         for i in gr_indices:
             bar_plot[i].set_color("orange")
         ax.set_title(name)
         ax.tick_params(axis="x", rotation=45)
 
-    remove_unused_axes(col_names, axes)
+    remove_unused_axes(COL_NAMES, axes)
     plt.suptitle(f"Jogo {date} - Atlético vs {opponent}")
     plt.tight_layout()
 
