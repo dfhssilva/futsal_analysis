@@ -51,6 +51,8 @@ if __name__ == "__main__":
         gr_indices = data.index[data["Nome completo"].isin(GR_NAMES)].tolist()
         for i in gr_indices:
             bar_plot[i].set_color("orange")
+        # Set values above bars
+        ax.bar_label(bar_plot, fontsize="small")        
         ax.set_title(name)
         ax.tick_params(axis="x", rotation=90)
 
