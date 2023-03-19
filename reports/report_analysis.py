@@ -1,7 +1,6 @@
 import os
 import sys
 import getopt
-import re
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -27,20 +26,6 @@ def parse_parameters(argv):
             arg_file = arg
 
     return arg_file
-
-
-def get_date(df):
-    date = df.iloc[6, 3]
-    pattern = re.compile("Data: (.*)$")
-    date = pattern.search(date).group(1)
-    return date
-
-
-def get_opponent(df):
-    opponent = df.iloc[2, 3]
-    pattern = re.compile("VS (.*)$")
-    opponent = pattern.search(opponent).group(1)
-    return opponent
 
 
 if __name__ == "__main__":

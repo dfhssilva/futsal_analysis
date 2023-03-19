@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from utils import *
 
@@ -23,6 +24,8 @@ CURRENT_PLAYERS = [
     "Óscar S.", 
     "Mário B."
 ]
+
+sns.set_theme()
 
 if __name__ == "__main__":
     xlsx_files = list(filter(lambda x: x.endswith("xlsx"), os.listdir()))

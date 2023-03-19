@@ -3,6 +3,7 @@ reports/*xlsx
 reports/*png
 reports/non_official/*xlsx
 reports/non_official/*png
+reports/*html
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python

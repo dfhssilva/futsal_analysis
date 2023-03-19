@@ -1,9 +1,24 @@
+import re
 import numpy as np
 from math import ceil
 
 
 COL_NAMES = ["Perda de Bola", "Passe Errado", "Desarme", "Interceção de Passe", "Interceção de Remate", "Remate", "Remate à Baliza", "Assistência", "Golos", "Defesas", "Linha de Passe"]
 GR_NAMES = ["Vasco S.", "Mário B.", "Óscar S.", "Pedro R."]
+
+
+def get_date(df):
+    date = df.iloc[6, 3]
+    pattern = re.compile("Data: (.*)$")
+    date = pattern.search(date).group(1)
+    return date
+
+
+def get_opponent(df):
+    opponent = df.iloc[2, 3]
+    pattern = re.compile("VS (.*)$")
+    opponent = pattern.search(opponent).group(1)
+    return opponent
 
 
 def extract_analysis_table(df):
