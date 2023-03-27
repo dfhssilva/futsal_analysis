@@ -4,9 +4,12 @@ import getopt
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from utils import *
 
+
+sns.set_theme()
 
 def parse_parameters(argv):
     arg_file = ""
